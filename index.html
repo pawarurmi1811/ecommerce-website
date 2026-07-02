@@ -1,0 +1,412 @@
+Here is a complete, self-contained **HTML** file featuring a modern, elegant cafe homepage design along with a smooth, responsive custom cursor effect.
+
+You can save this code as an `index.html` file and open it directly in any browser to see the cursor effect in action.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aroma & Co. | Premium Boutique Coffee</title>
+    <style>
+        /* --- RESET & VARIABLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --espresso: #2C1B14;
+            --latte: #F4EBE1;
+            --gold: #D4AF37;
+            --charcoal: #1A1A1A;
+            --white: #FFFFFF;
+            --cream-soft: rgba(244, 235, 225, 0.8);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--latte);
+            color: var(--espresso);
+            /* Hide the default system cursor */
+            cursor: none; 
+        }
+
+        a, button, select, input {
+            /* Ensure system cursor stays hidden on interactive elements */
+            cursor: none !important; 
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .custom-cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--espresso);
+            position: fixed;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s, background-color 0.3s;
+        }
+
+        .custom-cursor-ring {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--espresso);
+            position: fixed;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            /* Smooth lag/inertia handled via JS requestAnimationFrame or lightweight transition */
+            transition: transform 0.08s ease-out, width 0.3s, height 0.3s, border-color 0.3s, background-color 0.3s;
+        }
+
+        /* Hover states for cursor */
+        .cursor-hover .custom-cursor-ring {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(44, 27, 20, 0.1);
+            border-color: var(--gold);
+        }
+
+        .cursor-hover .custom-cursor-dot {
+            background-color: var(--gold);
+            width: 12px;
+            height: 12px;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        /* --- NAVIGATION --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(244, 235, 225, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(44, 27, 20, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--espresso);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--espresso);
+            margin: 0 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--gold);
+        }
+
+        .cta-btn {
+            background-color: var(--espresso);
+            color: var(--latte);
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .cta-btn:hover {
+            background-color: var(--gold);
+            color: var(--espresso);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            /* Warm, moody placeholder background simulating a cafe */
+            background: linear-gradient(rgba(44, 27, 20, 0.6), rgba(44, 27, 20, 0.7)), url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=1920') no-repeat center center/cover;
+            color: var(--latte);
+        }
+
+        .hero-content {
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .hero-btns .cta-btn {
+            margin-right: 15px;
+        }
+
+        .hero-btns .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--latte);
+            color: var(--latte);
+        }
+
+        .hero-btns .btn-secondary:hover {
+            background: var(--latte);
+            color: var(--espresso);
+        }
+
+        /* --- SECTIONS COMMON --- */
+        section {
+            padding: 100px 10%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--gold);
+            margin: 15px auto 0;
+        }
+
+        /* --- FEATURES SECTION --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 40px 30px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .feature-card p {
+            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        /* --- MENU SECTION --- */
+        .menu-section {
+            background-color: #EFE4DA;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 40px; }
+            header { padding: 20px 5%; }
+            nav { display: none; } /* Simplified for mobile layout */
+        }
+
+        .menu-item {
+            background: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            transition: all 0.3s;
+        }
+
+        .menu-item:hover {
+            border-left: 4px solid var(--gold);
+            padding-left: 29px;
+        }
+
+        .menu-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .menu-info p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .menu-price {
+            font-weight: 700;
+            color: var(--espresso);
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor Elements -->
+    <div class="custom-cursor-dot" id="cursor-dot"></div>
+    <div class="custom-cursor-ring" id="cursor-ring"></div>
+
+    <!-- Navigation Header -->
+    <header>
+        <a href="#" class="logo hover-target">AROMA & CO.</a>
+        <nav>
+            <a href="#" class="hover-target">Home</a>
+            <a href="#menu" class="hover-target">Menu</a>
+            <a href="#about" class="hover-target">About Us</a>
+            <a href="#" class="hover-target">Order Online</a>
+        </nav>
+        <button class="cta-btn hover-target">Book a Table</button>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Brewed to Perfection, Just for You</h1>
+            <p>Step into a cozy sanctuary where artisanal roasting meets local passion. Every cup tells a story of carefully sourced beans and precise crafting.</p>
+            <div class="hero-btns">
+                <button class="cta-btn hover-target">Explore Menu</button>
+                <button class="cta-btn btn-secondary hover-target">Find a Cafe</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="about">
+        <h2 class="section-title">What Makes Us Special</h2>
+        <div class="features-grid">
+            <div class="feature-card hover-target">
+                <span class="feature-icon">🌱</span>
+                <h3>Artisanal Roasts</h3>
+                <p>100% organic, locally sourced beans meticulously roasted in small batches to preserve distinct flavor profiles.</p>
+            </div>
+            <div class="feature-card hover-target">
+                <span class="feature-icon">✨</span>
+                <h3>Cozy Spaces</h3>
+                <p>Thoughtfully designed interiors boasting warm lighting, soft acoustics, and power outlets for your remote work or deep relaxation.</p>
+            </div>
+            <div class="feature-card hover-target">
+                <span class="feature-icon">🥐</span>
+                <h3>Fresh Pastries</h3>
+                <p>Delivered and baked fresh every single morning by our premier neighborhood artisanal pastry chefs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Preview Section -->
+    <section id="menu" class="menu-section">
+        <h2 class="section-title">Signature Creations</h2>
+        <div class="menu-grid">
+            <div class="menu-item hover-target">
+                <div class="menu-info">
+                    <h4>Classic Affogato</h4>
+                    <p>Espresso shot poured over premium vanilla bean gelato.</p>
+                </div>
+                <div class="menu-price">$6.50</div>
+            </div>
+            <div class="menu-item hover-target">
+                <div class="menu-info">
+                    <h4>Ceremonial Matcha Latte</h4>
+                    <p>Stone-ground Uji matcha whisked smoothly with oat milk.</p>
+                </div>
+                <div class="menu-price">$5.75</div>
+            </div>
+            <div class="menu-item hover-target">
+                <div class="menu-info">
+                    <h4>Spiced Vanilla Flat White</h4>
+                    <p>Ristretto espresso shots combined with steamed microfoam and homemade syrup.</p>
+                </div>
+                <div class="menu-price">$5.25</div>
+            </div>
+            <div class="menu-item hover-target">
+                <div class="menu-info">
+                    <h4>Almond Twice-Baked Croissant</h4>
+                    <p>Flaky pastry filled and topped with rich frangipane cream and shaved almonds.</p>
+                </div>
+                <div class="menu-price">$4.50</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JavaScript for Custom Cursor Effect -->
+    <script>
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+
+        // Track mouse movement
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Instantly position the center solid dot
+            dot.style.left = `${posX}px`;
+            dot.style.top = `${posY}px`;
+
+            // Position the lagging outer ring
+            ring.style.left = `${posX}px`;
+            ring.style.top = `${posY}px`;
+        });
+
+        // Interactive hover effects
+        const targets = document.querySelectorAll('.hover-target');
+        
+        targets.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                document.body.classList.add('cursor-hover');
+            });
+            item.addEventListener('mouseleave', () => {
+                document.body.classList.remove('cursor-hover');
+            });
+        });
+    </script>
+</body>
+</html>
